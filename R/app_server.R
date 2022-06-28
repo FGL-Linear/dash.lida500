@@ -8,9 +8,11 @@ app_server <- function(input, output, session) {
   )
   #
   
-  out_resultados <- mod_resultados_server("resultados_ui_1")
+  out_importar <- mod_importar_server("importar_ui_1")
+  out_resultados <- mod_resultados_server("resultados_ui_1", out_importar$datos)
   mod_calibracion_server("calibracion_ui_1", out_resultados$datos, out_resultados$reac_selec)
   mod_curvReac_server("curvReac_ui_1", out_resultados$datos, out_resultados$id_reaccion)
   mod_guardar_server("guardar_ui_1", out_resultados$datos, out_resultados$reac_selec)
+
   
 }

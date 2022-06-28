@@ -1,13 +1,5 @@
-fct_loadData <- function(reaction_disk){
-  file <- "C:\\Users\\fguerrero.LINEAR\\Desktop\\Analyzer.mdb"
-  
-  importr::import_lida500_db(reaction_disk = reaction_disk, file = file) %>%
-    importr::wrangle_lida500_db() %>%
-    importr::imp_dm(instrument = "Lida 500")
-}
-
-fct_resultados_tabla <- function(datos, react_selec){
-  x <- datos %>% 
+fct_resultados_tabla <- function(datos_importar, react_selec){
+  x <- datos_importar %>% 
   dm::dm_select_tbl(resultado, serie, calibracion) %>%
     dm::dm_squash_to_tbl(start = resultado)
   y <- x %>%

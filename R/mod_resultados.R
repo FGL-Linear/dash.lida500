@@ -9,9 +9,7 @@ mod_resultados_ui <- function(id) {
     tabName = "resultados",
     
     fluidRow(
-      column(width = 3,
-        selectInput(ns("worklist"), "Worklist", choices = 1:10)
-      ),
+ #     column(width = 3, selectInput(ns("worklist"), "Worklist", choices = 1:10) ),
       column(width = 3,
         selectInput(ns("reactivo"), "Reactivo", choices = 1:10)
       )
@@ -24,34 +22,33 @@ mod_resultados_ui <- function(id) {
 
 # Module Server
  
-mod_resultados_server <- function(id) {
+mod_resultados_server <- function(id, datos_importar) {
 	moduleServer(id, function(input, output, session) {
 	  
 	 # Reactives 
 
-	  datos <- reactive(fct_loadData(reaction_disk = input$worklist))
+#	  datos <- reactive(fct_loadData(reaction_disk = input$worklist))
+
 	  id_reaccion <- eventReactive(
 	    input$results_rows_selected , {
 	      tryCatch(
 	        error = function(cnd) {1},
-	      datos()$resultado$id_reaccion_temp[[input$results_rows_selected]]
+	        datos_importar()$resultado$id_reaccion_temp[[input$results_rows_selected]]
 	      )
 	    })
 
 	  # Observers
-	  observeEvent( datos() , {
+	  observeEvent( datos_importar() , {
 	    shiny::updateSelectInput(
 	      inputId = "reactivo",
 	      #selected = ,
-	      choices = datos()$calibracion$reactivo)
+	      choices = datos_importar()$calibracion$reactivo)
 	  })
 	  
 	  # Outputs
-	  output$loteR1 <- renderText("Pendiente")
-	  output$loteR2 <- renderText("Pendiente")
 	  output$results <- DT::renderDT(
 	    DT::datatable(
-	      fct_resultados_tabla( datos(), react_selec = input$reactivo ),
+	      fct_resultados_tabla( datos_importar(), react_selec = input$reactivo ),
 	      selection = list( mode = "single", selected = 1),
 	      options = list(
 	        lengthMenu= list(c(-1, 10, 25, 50), 
@@ -62,7 +59,7 @@ mod_resultados_server <- function(id) {
 	
 	  # Output del modulo
 	  list(
-	    datos = reactive(datos()),
+	    datos = reactive(datos_importar()),
 	    id_reaccion = reactive(id_reaccion()),
 	    reac_selec = reactive(input$reactivo)
 	    )
