@@ -33,9 +33,11 @@ mod_curvReac_server <- function(id, datos, resultados_id_reaccion) {
     })
     
     # Reactives
+
     lista_ids <- reactive(
       sort(c(datos()$cal_rep$id_reaccion_temp, datos()$resultado$id_reaccion_temp))
     )
+
     datos_curvas <- reactive(fct_curvReact_data(
       datos = datos(),
       id_reaccion = input$id_reaccion
