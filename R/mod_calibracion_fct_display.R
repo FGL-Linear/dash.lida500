@@ -1,6 +1,7 @@
-fct_calibracion_data <- function(datos){
+fct_calibracion_data <- function(datos, reac_selec){
   replicados <- datos$cal_rep %>% 
-    dplyr::select(reactivo, id_reaccion_temp, id_muestra, absorbancia, valor, fecha_hora)
+    dplyr::select(reactivo, id_reaccion_temp, id_muestra, absorbancia, valor, fecha_hora) %>% 
+    dplyr::filter(.data$reactivo == reac_selec)
   
   tipo <- datos$calibracion$tipo
   

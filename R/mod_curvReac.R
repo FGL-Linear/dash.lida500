@@ -55,8 +55,6 @@ mod_curvReac_server <- function(id, datos, resultados_id_reaccion) {
         datos_curvas()
       )
     )
-
-    
 	})
 }
  

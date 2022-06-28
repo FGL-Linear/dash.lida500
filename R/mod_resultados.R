@@ -10,8 +10,7 @@ mod_resultados_ui <- function(id) {
     
     fluidRow(
       selectInput(ns("worklist"), "Worklist", choices = 1:10, width = "80px"),
-      box(textOutput(ns("reactivo")), title = "Reactivo", width = 3),
-      box(textOutput(ns("instrumento")), title = "Instrumento", width = 3),
+      selectInput(ns("reactivo"), "Reactivo", choices = 1:10, width = "80px"),
       box(textOutput(ns("loteR1")), title = "Lote R1", width = 2),
       box(textOutput(ns("loteR2")), title = "Lote R2", width = 2),
 
@@ -38,24 +37,29 @@ mod_resultados_server <- function(id) {
 	      )
 	    })
 
-
+	  # Observers
+	  observeEvent( datos() , {
+	    shiny::updateSelectInput(
+	      inputId = "reactivo",
+	      #selected = ,
+	      choices = datos()$calibracion$reactivo)
+	  })
+	  
 	  # Outputs
-	  output$id_reaccion <- renderText( id_reaccion() )
-	  output$reactivo <- renderText( datos()$calibracion$reactivo )
-	  output$instrumento <- renderText( datos()$calibracion$instrumento)
 	  output$loteR1 <- renderText("Pendiente")
 	  output$loteR2 <- renderText("Pendiente")
 	  output$results <- DT::renderDT(
 	    DT::datatable(
-	      datos()$resultado, selection = list( mode = "single", selected = 1)
+	      fct_resultados_tabla( datos(), react_selec = input$reactivo )
+	      , selection = list( mode = "single", selected = 1)
 	      )
 	    )
 	
-
 	  # Output del modulo
 	  list(
 	    datos = reactive(datos()),
-	    id_reaccion = reactive(id_reaccion())
+	    id_reaccion = reactive(id_reaccion()),
+	    reac_selec = reactive(input$reactivo)
 	    )
 		
 	})

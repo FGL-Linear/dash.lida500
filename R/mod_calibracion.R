@@ -8,7 +8,7 @@ mod_calibracion_ui <- function(id) {
   tabItem(
     tabName = "calibracion",
     fluidRow(
-      box(plotOutput(ns("cal_curv")), title = "Curva de calibracion", width = 6),
+      box(plotOutput(ns("cal_curv")), title = "Curva de calibracion", width = 12),
       box(DT::DTOutput(ns("cal_rep"), height = "800px"), title = "Resultados", width = 12)
     )
   )
@@ -16,10 +16,10 @@ mod_calibracion_ui <- function(id) {
 
 # Module Server
  
-mod_calibracion_server <- function(id, datos) {
+mod_calibracion_server <- function(id, datos, reac_selec) {
 	moduleServer(id, function(input, output, session) {
 
-	  datos_calibracion <- reactive(datos() %>% fct_calibracion_data())
+	  datos_calibracion <- reactive(datos() %>% fct_calibracion_data(reac_selec()))
 	  output$cal_rep <- DT::renderDT(
 	    DT::datatable(
 	      datos_calibracion()$replicados, selection = list( mode = "single", selected = 1)
