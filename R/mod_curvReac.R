@@ -11,10 +11,12 @@ mod_curvReac_ui <- function(id) {
       selectInput(ns("id_reaccion"), "ID Reaccion", choices = 1)
     ),
     fluidRow(
-      box(plotOutput(ns("curv_reac")), title = "Curva de reaccion", width = 12)
+      column(width = 8,
+             box(plotOutput(ns("curv_reac")), title = "Curva de reaccion", width = 12)
       ),
-    fluidRow(
-      box(DT::DTOutput(ns("datos_abs"), height = "800px"), title = "Datos", width = 12)
+      column(width = 4,
+             box(DT::DTOutput(ns("datos_abs"), height = "800px"), title = "Datos", width = 12)
+      )
     )
   )
 }
@@ -47,7 +49,13 @@ mod_curvReac_server <- function(id, datos, resultados_id_reaccion) {
     output$id_reaccion <- renderText(input$id_reaccion)
     output$datos_abs <- DT::renderDT(
       DT::datatable(
-        datos_curvas()
+        datos_curvas() %>%
+          dplyr::ungroup() %>% 
+          dplyr::select(Primaria, Secundaria, Diferencia),
+        options = list(
+          lengthMenu= list(c(-1, 10, 25, 50), 
+                           c('All', '10', '25', '50'))
+        )
       )
     )
     output$curv_reac <- renderPlot(

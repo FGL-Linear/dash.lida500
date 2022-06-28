@@ -9,11 +9,12 @@ mod_resultados_ui <- function(id) {
     tabName = "resultados",
     
     fluidRow(
-      selectInput(ns("worklist"), "Worklist", choices = 1:10, width = "80px"),
-      selectInput(ns("reactivo"), "Reactivo", choices = 1:10, width = "80px"),
-      box(textOutput(ns("loteR1")), title = "Lote R1", width = 2),
-      box(textOutput(ns("loteR2")), title = "Lote R2", width = 2),
-
+      column(width = 3,
+        selectInput(ns("worklist"), "Worklist", choices = 1:10)
+      ),
+      column(width = 3,
+        selectInput(ns("reactivo"), "Reactivo", choices = 1:10)
+      )
     ),
     fluidRow(
       box(DT::DTOutput(ns("results"), height = "800px"), title = "Resultados", width = 12)
@@ -50,10 +51,14 @@ mod_resultados_server <- function(id) {
 	  output$loteR2 <- renderText("Pendiente")
 	  output$results <- DT::renderDT(
 	    DT::datatable(
-	      fct_resultados_tabla( datos(), react_selec = input$reactivo )
-	      , selection = list( mode = "single", selected = 1)
+	      fct_resultados_tabla( datos(), react_selec = input$reactivo ),
+	      selection = list( mode = "single", selected = 1),
+	      options = list(
+	        lengthMenu= list(c(-1, 10, 25, 50), 
+	                         c('All', '10', '25', '50'))
 	      )
 	    )
+	  )
 	
 	  # Output del modulo
 	  list(
