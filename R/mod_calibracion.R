@@ -9,17 +9,24 @@ mod_calibracion_ui <- function(id) {
     tabName = "calibracion",
     fluidRow(
       box(plotOutput(ns("cal_curv")), title = "Curva de calibracion", width = 6),
-      box(DT::DTOutput(ns("cal_rep"), height = "800px"), title = "Replicados", width = 6)
+      box(DT::DTOutput(ns("cal_rep"), height = "800px"), title = "Resultados", width = 12)
     )
   )
 }
 
 # Module Server
  
-mod_calibracion_server <- function(id) {
+mod_calibracion_server <- function(id, datos) {
 	moduleServer(id, function(input, output, session) {
-	  output$cal_rep <- DT::renderDT(shinipsum::random_DT(nrow = 20, ncol = 7))
-	  output$cal_curv <- renderPlot(shinipsum::random_ggplot())
+
+	  datos_calibracion <- reactive(datos() %>% fct_calibracion_data())
+	  output$cal_rep <- DT::renderDT(
+	    DT::datatable(
+	      datos_calibracion()$replicados, selection = list( mode = "single", selected = 1)
+	    )
+	  )
+	  
+	  output$cal_curv <- renderPlot(fct_calibracion_curve(datos_calibracion()))
 	})
 }
  

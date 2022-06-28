@@ -9,18 +9,12 @@ mod_resultados_ui <- function(id) {
     tabName = "resultados",
     
     fluidRow(
-      
+      selectInput(ns("worklist"), "Worklist", choices = 1:10, width = "80px"),
       box(textOutput(ns("reactivo")), title = "Reactivo", width = 3),
       box(textOutput(ns("instrumento")), title = "Instrumento", width = 3),
       box(textOutput(ns("loteR1")), title = "Lote R1", width = 2),
       box(textOutput(ns("loteR2")), title = "Lote R2", width = 2),
-      box(
-        selectInput(ns("worklist"), "Worklist", choices = 1:10),
-        actionButton(ns("guardar"), "Guardar"),
-        width = 2
-      ),
 
-      box(textOutput(ns("id_reaccion")), title = "ID_Reaccion"),
     ),
     fluidRow(
       box(DT::DTOutput(ns("results"), height = "800px"), title = "Resultados", width = 12)
@@ -37,7 +31,11 @@ mod_resultados_server <- function(id) {
 
 	  datos <- reactive(fct_loadData(reaction_disk = input$worklist))
 	  id_reaccion <- eventReactive(
-	    input$results_rows_selected , {	      datos()$resultado$id_reaccion_temp[[input$results_rows_selected]]
+	    input$results_rows_selected , {
+	      tryCatch(
+	        error = function(cnd) {1},
+	      datos()$resultado$id_reaccion_temp[[input$results_rows_selected]]
+	      )
 	    })
 
 
@@ -52,8 +50,9 @@ mod_resultados_server <- function(id) {
 	      datos()$resultado, selection = list( mode = "single", selected = 1)
 	      )
 	    )
+	
 
-	  # Output del modulo. Ahora pone la fila, en un futuro será la id reacc
+	  # Output del modulo
 	  list(
 	    datos = reactive(datos()),
 	    id_reaccion = reactive(id_reaccion())

@@ -9,6 +9,6 @@ app_server <- function(input, output, session) {
   #
   
   out_resultados <- mod_resultados_server("resultados_ui_1")
-  mod_calibracion_server("calibracion_ui_1")
+  mod_calibracion_server("calibracion_ui_1", out_resultados$datos)
   mod_curvReac_server("curvReac_ui_1", out_resultados$datos, out_resultados$id_reaccion)
 }
