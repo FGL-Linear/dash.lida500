@@ -13,7 +13,10 @@ pkgs <- c(
   "shinydashboard",
   "shinydashboardPlus",
   "shinipsum",
-  "DT"
+  "DT",
+  "importr",
+  "profvis",
+  "reactlog"
 )
 
 for (i in pkgs) {

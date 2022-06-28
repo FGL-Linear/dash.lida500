@@ -9,4 +9,7 @@ rm(list = ls(all.names = TRUE))
 golem::document_and_reload()
 
 # Run the application
+#reactlog::reactlog_enable()
 run_app()
+#shiny::reactlogShow()
+#reactlog::reactlog_disable()

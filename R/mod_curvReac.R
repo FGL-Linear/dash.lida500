@@ -8,8 +8,8 @@ mod_curvReac_ui <- function(id) {
 	tabItem(
 		tabName = "curvReac",
 		fluidRow(
-		  box(textOutput(ns("fila")), title = "out_resultados", width = 3),
-		  selectInput(ns("id_reaccion"), "ID Reaccion", choices = 1:10),
+		  box(textOutput(ns("id_reaccion")), title = "id_reaccion", width = 3),
+		  selectInput(ns("id_reaccion"), "ID Reaccion", choices = 1:100),
 		  box(plotOutput(ns("curv_reac")), title = "Curva de calibracion", width = 6),
 		  box(DT::DTOutput(ns("datos_abs"), height = "800px"), title = "Replicados", width = 6)
 		)
@@ -18,11 +18,19 @@ mod_curvReac_ui <- function(id) {
  
 # Module Server
  
-mod_curvReac_server <- function(id, out_resultados) {
+mod_curvReac_server <- function(id, datos, resultados_id_reaccion) {
 	moduleServer(id, function(input, output, session) {
+	  
 	  output$datos_abs <- DT::renderDT(shinipsum::random_DT(nrow = 20, ncol = 7))
 	  output$curv_reac <- renderPlot(shinipsum::random_ggplot())
-	  output$fila <- out_resultados
+    output$id_reaccion <- renderText(input$id_reaccion)
+    
+    observeEvent( resultados_id_reaccion() , {
+    shiny::updateSelectInput(
+      inputId = "id_reaccion",
+      selected = resultados_id_reaccion())
+    })
+    
 	})
 }
  

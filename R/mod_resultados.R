@@ -19,7 +19,8 @@ mod_resultados_ui <- function(id) {
         actionButton(ns("guardar"), "Guardar"),
         width = 2
       ),
-      box(textOutput(ns("selec")), title = "Fila")
+
+      box(textOutput(ns("id_reaccion")), title = "ID_Reaccion"),
     ),
     fluidRow(
       box(DT::DTOutput(ns("results"), height = "800px"), title = "Resultados", width = 12)
@@ -32,20 +33,30 @@ mod_resultados_ui <- function(id) {
 mod_resultados_server <- function(id) {
 	moduleServer(id, function(input, output, session) {
 	  
-	  output$reactivo <- renderText("Reactivo")
-	  output$instrumento <- renderText("Instrumento")
-	  output$loteR1 <- renderText("Lote R1")
-	  output$loteR2 <- renderText("Lote R2")
+	 # Reactives 
+
+	  datos <- reactive(fct_loadData(reaction_disk = input$worklist))
+	  id_reaccion <- eventReactive(
+	    input$results_rows_selected , {	      datos()$resultado$id_reaccion_temp[[input$results_rows_selected]]
+	    })
+
+
+	  # Outputs
+	  output$id_reaccion <- renderText( id_reaccion() )
+	  output$reactivo <- renderText( datos()$calibracion$reactivo )
+	  output$instrumento <- renderText( datos()$calibracion$instrumento)
+	  output$loteR1 <- renderText("Pendiente")
+	  output$loteR2 <- renderText("Pendiente")
 	  output$results <- DT::renderDT(
-	    shinipsum::random_DT(nrow = 20, ncol = 7, selection = list(mode = "single", target = "row"))
-	    ) 
-	  
-	  output$selec <- renderText(input$results_rows_selected)
-	  
-	  # Returned values?
+	    DT::datatable(
+	      datos()$resultado, selection = list( mode = "single", selected = 1)
+	      )
+	    )
+
+	  # Output del modulo. Ahora pone la fila, en un futuro será la id reacc
 	  list(
-	    fila = reactive(input$results_rows_selected),
-	    otro = "0"
+	    datos = reactive(datos()),
+	    id_reaccion = reactive(id_reaccion())
 	    )
 		
 	})
