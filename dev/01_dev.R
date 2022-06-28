@@ -16,7 +16,8 @@ pkgs <- c(
   "DT",
   "importr",
   "profvis",
-  "reactlog"
+  "reactlog",
+  "stringr"
 )
 
 for (i in pkgs) {
