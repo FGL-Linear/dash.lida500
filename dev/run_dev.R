@@ -13,3 +13,4 @@ golem::document_and_reload()
 run_app()
 #shiny::reactlogShow()
 #reactlog::reactlog_disable()
+
