@@ -8,18 +8,9 @@ mod_importar_ui <- function(id) {
 	tabItem(
 		tabName = "importar",
 		fluidRow(
-		  
 		  selectInput(ns("worklist"), "Worklist", choices = 1:10),
-		  
-		  actionButton(
-		    inputId = ns("boton_lida500"),
-		    label = "Importar desde Lida 500"
-		  ),
-		  
-		  actionButton(
-		    inputId = ns("boton_rds"),
-		    label = "Cargar .rds"
-		  )
+		  actionButton(ns("boton_lida500"), label = "Importar desde Lida 500"),
+		  actionButton(ns("boton_rds"), label = "Cargar .rds")
 		)
 	)
 }
@@ -31,16 +22,14 @@ mod_importar_server <- function(id) {
 	  
 	  # Reactives 
 	  
-	  datos <- function(){readRDS("C:/Users/fguerrero.LINEAR/Documents/R/Shiny apps/dashboard.lida500/data/example.RDS")}
+	  datos <- function(){readRDS(here::here("data/example.RDS"))}
 	  
 	  datos <- eventReactive( input$boton_lida500, {
-	   fct_loadData(reaction_disk = input$worklist)
-	  })
+	   fct_loadData( reaction_disk = input$worklist ) })
 
 	  datos <- eventReactive( input$boton_rds, {
 	    filepath <- file.choose()
-	    readRDS(file = filepath)
-	  })
+	    readRDS(file = filepath) })
 	  
 	  # Output del modulo
 	  list(

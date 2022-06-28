@@ -8,10 +8,8 @@ mod_guardar_ui <- function(id) {
 	tabItem(
 		tabName = "guardar",
 		fluidRow(
-		  actionButton(
-		    inputId = ns("save"),
-		    label = "Guardar"
-		  )
+		  actionButton(inputId = ns("save"), label = "Guardar"),
+		  actionButton(inputId = ns("exportExcel"), label = "Exportar Excel")
 		)
 	)
 }
@@ -35,6 +33,26 @@ mod_guardar_server <- function(id, datos, reac_selec) {
 	        " resultados_lida500.RDS"
 	      )
 	      saveRDS(datos_exportar(), file = filename)
+	      #readr::write_excel_csv2(x = curvas, file = filename)
+	      
+	    }
+	  )
+	  
+	  observeEvent(
+	    input$exportExcel,
+	    {
+	      path <- choose.dir(caption = "Seleccionar carpeta")
+	      filename <- paste0(
+	        path,
+	        "\\",
+	        lubridate::now() %>%
+	          as.character() %>%
+	          stringr::str_replace_all(pattern = ":", replacement = "_"),
+	        " resultados_lida500.xlsx"
+	      )
+	      writexl::write_xlsx(fct_formatoExcel(datos_exportar()), path = filename)
+	     
+	      
 	      #readr::write_excel_csv2(x = curvas, file = filename)
 	      
 	    }
